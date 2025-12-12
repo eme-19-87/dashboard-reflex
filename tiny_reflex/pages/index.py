@@ -15,7 +15,11 @@ def index() -> rx.Component:
                     href="/customers",
                     style={"text_decoration": "none"},
                 ),
-               
+                  rx.link(
+                    rx.button("View Sales For State And Cities"),
+                    href="/sales_cities_states_page",
+                    style={"text_decoration": "none"},
+                ),
                 spacing="2",
             ),
             spacing="2",

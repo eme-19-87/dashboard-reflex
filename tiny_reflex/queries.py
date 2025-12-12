@@ -17,11 +17,11 @@ def load_sales_for_customers()->list[SalesForCustomersData]:
         print(f"Error loading data for customers sales: {e}")
         return []  
 
-def load_sales_for_state_customers()->list[SalesForStateCustomerData]:
+def load_sales_for_state_customers_query()->list[SalesForStateCustomerData]:
     """Load average and total sales for states of customers"""
     try:
         engine=get_engine()
-        query="Select fs.customer_state, avg(total) AS avg_sales_state, sum(total) AS total_sales_state from gold.fact_sales fs inner join gold.dim_customers dm on fs.customer_key=dm.customer_key group by customer_state limit 10"
+        query="Select dm.customer_state, avg(total) AS avg_sales, sum(total) AS sum_sales from gold.fact_sales fs inner join gold.dim_customers dm on fs.customer_key=dm.customer_key group by customer_state"
         df=pd.read_sql(query,engine)
         records=df.to_dict("records")
         return cast(list[SalesForStateCustomerData],records)
