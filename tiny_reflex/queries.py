@@ -2,7 +2,7 @@
 
 import pandas as pd
 from typing import cast
-from tiny_reflex.db_connection_local import get_engine
+from tiny_reflex.db_connection import get_engine
 from tiny_reflex.types import DimCustomerData,SalesForCustomersData, SalesForStateCustomerData
 
 def load_sales_for_customers()->list[SalesForCustomersData]:
