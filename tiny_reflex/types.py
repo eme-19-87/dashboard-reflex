@@ -81,10 +81,11 @@ class SalesForCustomersData(TypedDict):
 class SalesForStateCustomerData(TypedDict):
     """Type definition for fact sales where analize the states of Customers.
     Usuful to determinate the average and total sales for states where customers live."""
-    customer_key:int
     customer_state:str
-    avg:float
-    total:float
+    avg_sales:float
+    sum_sales:float
+    std_sales:float
+    count_items:int
 
 class SalesForStateSellerData(TypedDict):
     """Type definition for fact sales where analize the states of Sellers.

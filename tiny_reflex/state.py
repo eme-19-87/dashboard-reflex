@@ -32,7 +32,10 @@ class State(rx.State):
     sales_for_state_customers_data: list[SalesForStateCustomerData]=[]
     figure: go.Figure = px.line()
     fig_sales_for_state: go.Figure = px.line()
-    
+    fig_funel_sales_for_state: go.Figure=px.line()
+    selected_sales_metric: str = "avg_sales"
+    num_states_to_show: str = "5"
+    option_states:list[str]=[]
     # ===========================
     # FLAGS DE ESTADO
     # ===========================
@@ -77,9 +80,10 @@ class State(rx.State):
     @rx.event
     def load_sales_for_state_customers(self):
         self.loading_sales_for_state_customers = True
-        self.sales_for_state_customers_data = load_sales_for_state_customers_query()  # ESTA ERA LA LÍNEA MAL
-        self.loading_sales_for_state_customers = False  # ESTA TAMBIÉN
+        self.sales_for_state_customers_data = load_sales_for_state_customers_query()  
+        self.loading_sales_for_state_customers = False  
 
+    
     @rx.event
     def create_fig_bar_sales_customers(self):
         df=pd.DataFrame(self.sales_for_customers_data)
@@ -105,12 +109,37 @@ class State(rx.State):
         
     @rx.event
     def set_selected_sales_for_state_customers(self, metric="avg_sales"):
-        df=pd.DataFrame(self.sales_for_state_customers_data)
-        #df['customer_key'] = df['customer_key'].astype(str)
-        self.fig_sales_for_state = px.bar(
-            df,
-            x="customer_state",
-            y=f"{metric}",
-            title="Ventas Por Estado Clientes",
-            color=df["customer_state"].unique()
+        self.selected_sales_metric = metric
+        self.sales_for_state_customers_data = load_sales_for_state_customers_query(
+            metric=self.selected_sales_metric,
+            limit=self.num_states_to_show
         )
+
+        df = pd.DataFrame(self.sales_for_state_customers_data)
+
+       
+        # =========================
+        # PLOT CHART
+        # =========================
+        self.fig_funel_sales_for_state = px.bar(
+            df,
+            x=metric,
+            y="customer_state",
+            text_auto='.2s',
+            title=f"Ventas por Estado (Top {self.num_states_to_show})"
+        )
+
+        self.fig_funel_sales_for_state.update_layout(
+            autosize=True
+        )
+
+
+    @rx.event
+    def set_num_states_to_show(self, value: str):
+        """Update number of states and reload from the database."""
+        try:
+            self.num_states_to_show = str(max(5, int(value)))
+        except:
+            self.num_states_to_show = 5
+
+        self.set_selected_sales_for_state_customers(self.selected_sales_metric)
