@@ -2,6 +2,7 @@
 
 import reflex as rx
 import plotly.graph_objects as go
+from tiny_reflex.components.navbar import navbar
 from tiny_reflex.state import State
 
 
@@ -13,10 +14,10 @@ from tiny_reflex.state import State
 
 def customers_page() -> rx.Component:
     """Page displaying customers data."""
-    return rx.fragment(
+    return rx.box(
         rx.vstack(
+            navbar(),
             rx.heading("Customers", font_size="2em"),
-            rx.link("← Back to Home", href="/", style={"text_decoration": "none"}),
 
             rx.button(
                 "Load Customers",

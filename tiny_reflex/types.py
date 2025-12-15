@@ -86,6 +86,26 @@ class SalesForStateCustomerData(TypedDict):
     sum_sales:float
     std_sales:float
     count_items:int
+    
+class SalesForCitiesCustomerData(TypedDict):
+    """Type definition for fact sales where analize the cities of Customers.
+    Usuful to determinate the average and total sales for cities where customers live."""
+    customer_city:str
+    avg_sales:float
+    sum_sales:float
+    std_sales:float
+    count_items:int
+    
+class SalesForCategoryCustomerData(TypedDict):
+    """Type definition for fact sales where analize the category  of products purchased for Customers.
+    Usuful to determinate the average and total sales for category"""
+    product_category_name:str
+    avg_sales:float
+    sum_sales:float
+    std_sales:float
+    count_items:int
+
+
 
 class SalesForStateSellerData(TypedDict):
     """Type definition for fact sales where analize the states of Sellers.
@@ -94,3 +114,13 @@ class SalesForStateSellerData(TypedDict):
     seller_state:str
     avg:float
     total:float
+    
+class SalesCustomerSitiesStateData(TypedDict):
+    """Type definition for fact sales where analize the states of Sellers.
+    Usuful to determinate the average and total sales for states where sellers works."""
+    customer_state:int
+    customer_city:str
+    avg_sales:float
+    sum_sales:float
+    std_sales: float
+    count_sales:int

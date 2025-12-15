@@ -2,6 +2,7 @@
 
 import reflex as rx
 import pandas as pd
+from tiny_reflex.components.navbar import navbar
 from tiny_reflex.state import State
 
 
@@ -36,17 +37,16 @@ def sales_for_state_table() -> rx.Component:
 # ============================================================
 # PÁGINA PRINCIPAL
 # ============================================================
-def cities_page() -> rx.Component:
+def states_page() -> rx.Component:
     """Page displaying sales for city and states data."""
 
     return rx.box(
         rx.vstack(
-            rx.heading("Cities And States", font_size="2em"),
-            rx.link("← Back to Home", href="/", style={"text_decoration": "none"}),
-
+            navbar(),
+            rx.box(rx.heading("Ventas Por Estado", font_size="2em",align="center")),
             # Botón para cargar datos
             rx.button(
-                "Load Cities And States",
+                "Cargar Datos",
                 on_click=lambda: State.load_sales_for_state_customers(
                     State.selected_sales_metric,
                     State.num_states_to_show
@@ -62,18 +62,15 @@ def cities_page() -> rx.Component:
                     default_value="avg_sales",
                     on_change=State.set_selected_sales_for_state_customers,
                 ),
-                spacing="4",
-            ),
-
-            # Selector de cantidad de estados
-            rx.hstack(
+                 # Selector de cantidad de estados
                 rx.text("States to show:"),
                 rx.select(
                     ["5","10","20","30","40","50"],
                     default_value=State.num_states_to_show,
                     on_change=State.set_num_states_to_show,
                 ),
-                spacing="4",
+                spacing="4"
+                
             ),
 
             # Contenido dinámico
