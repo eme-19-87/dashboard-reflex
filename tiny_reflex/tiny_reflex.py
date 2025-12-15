@@ -6,6 +6,7 @@ from tiny_reflex.pages.customers.customers import customers_page
 from tiny_reflex.pages.customers.states import states_page
 from tiny_reflex.pages.customers.cities import cities_page
 from tiny_reflex.pages.customers.category_product import category_product_page
+from tiny_reflex.pages.customers.times_analysis import times_analysis
 
 # Create and configure the app
 app = rx.App()
@@ -16,4 +17,5 @@ app.add_page(customers_page, route="/customers")
 app.add_page(states_page, route="/customers/sales_by_state")
 app.add_page(cities_page, route="/customers/sales_by_city")
 app.add_page(category_product_page, route="/customers/sales_by_category")
+app.add_page(times_analysis, route="/customers/time_analysis")
 

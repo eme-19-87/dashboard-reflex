@@ -30,6 +30,9 @@ def navbar() -> rx.Component:
                 rx.menu.item(
                     rx.link("Sales By Category", href="/customers/sales_by_category")
                 ),
+                 rx.menu.item(
+                    rx.link("Sales By Time", href="/customers/time_analysis")
+                )
             ),
         ),
 

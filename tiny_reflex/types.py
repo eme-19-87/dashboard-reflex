@@ -104,8 +104,24 @@ class SalesForCategoryCustomerData(TypedDict):
     sum_sales:float
     std_sales:float
     count_items:int
+    
+class SalesForYearData(TypedDict):
+    """Type definition for fact sales where analize the sales over the year"""
+    date_year:int
+    avg_sales:float
+    sum_sales:float
+    
+class SalesForYearMonthData(TypedDict):
+    """Type definition for fact sales where analize the sales over the year and month"""
+    date_year_month:str
+    avg_sales:float
+    sum_sales:float
 
-
+class SalesForYearMonthDayData(TypedDict):
+    """Type definition for fact sales where analize the sales over the year, month and data"""
+    date_year_month_day:str
+    avg_sales:float
+    sum_sales:float
 
 class SalesForStateSellerData(TypedDict):
     """Type definition for fact sales where analize the states of Sellers.

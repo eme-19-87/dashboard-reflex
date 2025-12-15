@@ -2,8 +2,8 @@
 
 import pandas as pd
 from typing import cast
-from tiny_reflex.db_connection import get_engine
-from tiny_reflex.types import DimCustomerData, SalesForCategoryCustomerData, SalesForCitiesCustomerData,SalesForCustomersData, SalesForStateCustomerData
+from tiny_reflex.db_connection_local import get_engine
+from tiny_reflex.types import DimCustomerData, SalesForCategoryCustomerData, SalesForCitiesCustomerData,SalesForCustomersData, SalesForStateCustomerData, SalesForYearData, SalesForYearMonthData, SalesForYearMonthDayData
 
 def load_sales_for_customers()->list[SalesForCustomersData]:
     """Load average and total sales for customers"""
@@ -185,7 +185,128 @@ def load_sales_for_state_cities_customers_query(metric: str = "avg_sales",
         print(f"Error loading data for customers sales: {e}")
         return []
      
-          
+def load_sales_for_year_query(metric:str="avg_sales") -> list[SalesForYearData]:
+    """
+        Permite obtener los datos de las ventas por año
+        
+        Parámetros:
+        metric: Define qué metrica se mostrará: promedio, suma, desvío estándar, conteo
+
+        
+        Retorno:
+        Retorna una lista de tipo SalesForYearData que es el tipo de dato que guarda la
+        información de las ventas por año
+    """
+
+    try:
+        allowed_metrics = {"avg_sales", "sum_sales","std_sales","count_sales"}
+        if metric not in allowed_metrics:
+            metric = "avg_sales"
+        engine = get_engine()
+        query = f"""
+            SELECT 
+                dc.date_year,
+                ROUND(AVG(fs.total),2) AS avg_sales,
+                ROUND(SUM(fs.total),2) AS sum_sales,
+                ROUND(STDDEV(fs.total),2) AS std_sales
+            FROM gold.fact_sales fs
+            INNER JOIN gold.dim_calendar dc
+                ON fs.date_purchase_key = dc.date_key
+            GROUP BY dc.date_year
+            ORDER BY dc.date_year,{metric} DESC
+            
+        """
+        df = pd.read_sql(query, engine)
+        return cast(list[SalesForYearData], df.to_dict("records"))
+    except Exception as e:
+        print(f"Error loading data for customers sales: {e}")
+        return []
+    
+def load_sales_for_year_month_query(
+    metric: str,
+    start_date: str,
+    end_date: str
+) -> list[SalesForYearMonthData]:
+
+    try:
+        allowed_metrics = {"avg_sales", "sum_sales", "std_sales"}
+        if metric not in allowed_metrics:
+            metric = "avg_sales"
+
+        engine = get_engine()
+
+        query = f"""
+            SELECT 
+                dc.yyyymm,
+                ROUND(AVG(fs.total), 2) AS avg_sales,
+                ROUND(SUM(fs.total), 2) AS sum_sales,
+                ROUND(STDDEV(fs.total), 2) AS std_sales
+            FROM gold.fact_sales fs
+            INNER JOIN gold.dim_calendar dc
+                ON fs.date_purchase_key = dc.date_key
+            WHERE dc.iso_date::DATE BETWEEN %(start_date)s AND %(end_date)s
+            GROUP BY dc.yyyymm
+            ORDER BY dc.yyyymm, {metric} DESC
+        """
+
+        df = pd.read_sql(
+            query,
+            engine,
+            params={
+                "start_date": start_date,
+                "end_date": end_date,
+            }
+        )
+
+        return cast(list[SalesForYearMonthData], df.to_dict("records"))
+
+    except Exception as e:
+        print(f"Error loading data for customers sales: {e}")
+        return []
+
+
+def load_sales_for_year_month_day_query(
+    metric: str,
+    start_date: str,
+    end_date: str
+) -> list[SalesForYearMonthDayData]:
+
+    try:
+        allowed_metrics = {"avg_sales", "sum_sales", "std_sales"}
+        if metric not in allowed_metrics:
+            metric = "avg_sales"
+
+        engine = get_engine()
+
+        query = f"""
+            SELECT 
+                dc.yyyymmdd,
+                ROUND(AVG(fs.total), 2) AS avg_sales,
+                ROUND(SUM(fs.total), 2) AS sum_sales,
+                ROUND(STDDEV(fs.total), 2) AS std_sales
+            FROM gold.fact_sales fs
+            INNER JOIN gold.dim_calendar dc
+                ON fs.date_purchase_key = dc.date_key
+            WHERE dc.iso_date::DATE BETWEEN %(start_date)s AND %(end_date)s
+            GROUP BY dc.yyyymmdd
+            ORDER BY dc.yyyymmdd, {metric} DESC
+        """
+
+        df = pd.read_sql(
+            query,
+            engine,
+            params={
+                "start_date": start_date,
+                "end_date": end_date,
+            }
+        )
+
+        return cast(list[SalesForYearMonthDayData], df.to_dict("records"))
+
+    except Exception as e:
+        print(f"Error loading data for customers sales: {e}")
+        return []
+    
 def load_customers_silver() -> list[DimCustomerData]:
     """Load customers data from database."""
     try:
