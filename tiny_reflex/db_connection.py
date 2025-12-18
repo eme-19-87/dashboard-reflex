@@ -8,8 +8,8 @@ def get_engine():
     """
 
     user = os.getenv("POSTGRES_USER", "neondb_owner")
-    password = os.getenv("POSTGRES_PASSWORD", "npg_ZL5SKQRtp1OY")
-    host = os.getenv("POSTGRES_HOST", "ep-polished-wave-adgxnoki-pooler.c-2.us-east-1.aws.neon.tech")
+    password = os.getenv("POSTGRES_PASSWORD", "contra_neon")
+    host = os.getenv("POSTGRES_HOST", "host_neon")
     port = os.getenv("POSTGRES_PORT", "5432")
     database = os.getenv("POSTGRES_DB", "neondb")
 
